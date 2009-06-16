@@ -102,7 +102,10 @@ VideoList.Queued = new Class({
   Extends: VideoList,
   initialize: function(id){
     this.parent(id);
-    setInterval(this.update_status.bind(this), 3000)
+    GetVid.queue_poller = setInterval(this.update_status.bind(this), 3000)
+    GetVid.stop_queue_poller = function() {
+      clearInterval(GetVid.queue_poller);
+    };
   },
   
   videos: function(){
@@ -119,27 +122,20 @@ VideoList.Queued = new Class({
     
   update_status: function(){
     if (this.videos().length > 0) {
-      var video_ids = []
-      this.video_ids().each(function(id) {
-        video_ids.push("ids[]=" + id)
+      var video_ids = this.video_ids().map(function(id) {
+        return "ids[]=" + id;
       });
+      
+      var download_links_for = function(vid) {
+        return this.download_links_for(vid);
+      }.bind(this);
       
       new Request.JSON({
         url: "/videos/progress.json",
         data: video_ids.join("&"),
         onSuccess: function(data){
           data.each(function(vid) {
-            var element = $("video_" + vid.id);
-            var status = element.getChildren('.status')[0];
-            if (status.get('text').toLowerCase() != vid.current_state) {
-              status.set('text', vid.current_state);
-              element.highlight();
-            };
-            if (vid.current_state == 'complete') {
-              element.inject(GetVid.video_lists.completed.thead, 'after')
-              GetVid.video_lists.completed.incrementCount();
-              GetVid.video_lists.queued.decrementCount();
-            }
+            new Video(vid).prepare();
           });
         }
       }).get();
@@ -173,3 +169,64 @@ var NewVideo = new Class({
     return false;
   }
 });
+
+var Video = new Class({
+  initialize: function(attributes){
+    for(key in attributes) {
+      this[key] = attributes[key];
+    }
+    this.element = $("video_" + this.id);
+    this.action_cell = this.element.getElement("td:last-child");
+    this.status = this.element.getChildren('.status')[0];
+  },
+  
+  prepare: function(){
+    if (!this.status_equals_current_state()) {
+      this.status.set('text', this.current_state);
+      this.element.highlight();
+    };
+    
+    if (this.current_state == 'complete') {
+      this.element.inject(GetVid.video_lists.completed.thead, 'after')
+      this.download_links().inject(this.element.getElement('.video'), 'bottom');
+      this.delete_link().inject(this.action_cell, 'top');
+      GetVid.video_lists.completed.incrementCount();
+      GetVid.video_lists.queued.decrementCount();
+    }
+  },
+  
+  status_equals_current_state: function(){
+    return this.status.get('text').toLowerCase() == this.current_state;
+  },
+  
+  download_links: function(){
+    var container = new Element('dl', {'class': 'download_links'});
+    var dt = new Element('dt', {'text': 'Download Links:'});
+    var links = [{name: 'Video',     extension: '.mp4', path: '/output/Video/'},
+                 {name: 'Raw Audio', extension: '.aif', path: '/output/Audio/'},
+                 {name: 'MP3 Audio', extension: '.mp3', path: '/output/Audio/'}].map(function(link_config) {
+      var file = link_config.path + this.filename + link_config.extension;
+      var dd = new Element('dd');
+      var a = new Element('a', {
+        'text': link_config.name,
+        'title': link_config.name + ': ' + file,
+        'href': file
+      });
+      a.inject(dd);
+      return dd;
+    }, this);
+    
+    dt.inject(container);
+    links.each(function(link) {
+      link.inject(container);
+    });
+    return container;
+  },
+  
+  delete_link: function(){
+    return new Element('a', {
+      'text': 'Delete',
+      'href': '/videos/' + this.id + '/delete'
+    })
+  },
+})

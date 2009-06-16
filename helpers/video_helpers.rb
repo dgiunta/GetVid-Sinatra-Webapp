@@ -1,9 +1,12 @@
 module VideoHelpers
   def video_lists
-    lists = []
-    lists << {:queued => video_list_hashes[:queued]} if video_list_hashes.keys.include?(:queued)
-    lists << {:completed => video_list_hashes[:completed]} if video_list_hashes.keys.include?(:completed)
-    lists
+    %W[ queued completed].inject([]) do |lists, list|
+      lists << {
+        :name => list, 
+        :videos => video_list_hashes[list.to_sym]
+      } if video_list_hashes.keys.include?(list.to_sym)
+      lists
+    end
   end
   
   def video_list_hashes
@@ -14,7 +17,7 @@ module VideoHelpers
   end
   
   def video_list_title_for(name)
-    number = video_list_hashes[name.to_sym].length
+    number = video_list_hashes[name.to_sym].total_entries
     "There #{are_or_is_for(number)} <span class='number'>#{number}</span> #{name} #{pluralize('video', number)}"
   end
   
@@ -23,7 +26,7 @@ module VideoHelpers
   end
   
   def pluralize(word, number)
-    number > 1 || number > 1 ? word + 's' : word
+    number == 0 || number > 1 ? word + 's' : word
   end
   
   def output_path_to(filename)

@@ -1,13 +1,17 @@
+require 'rubygems'
+require 'haml'
+require 'json'
+require 'datamapper'
+
 Dir[File.join(File.dirname(__FILE__), 'vendor/**/lib')].each do |dir|
   $LOAD_PATH << dir
 end
 
-require 'rubygems'
-require 'haml'
-require 'datamapper'
 require 'will_paginate'
 require 'will_paginate/finders/data_mapper'
-require 'json'
+require 'will_paginate/view_helpers/base'
+require 'will_paginate/view_helpers/link_renderer'
+
 require 'sinatra'
 
 Dir[
@@ -50,17 +54,22 @@ end
 
 mime :json, "application/json"
 
-helpers do
-  include VideoHelpers
-end
-
 get '/' do
-  @completed_videos = Video.all(:state => 'complete', :order => [:created_at.desc])
-  @queued_videos    = Video.all(:state.not => 'complete')
+  @completed_videos = Video.paginate({
+    :state          => 'complete', 
+    :order          => [:created_at.desc], 
+    :page           => params[:completed_page], 
+    :per_page       => 8
+  })
+  @queued_videos    = Video.paginate({
+    :state.not      => 'complete', 
+    :page           => params[:queued_page], 
+    :per_page       =>  5
+  })
   haml :index
 end
 
-post '/get_vids' do
+post '/videos' do
   Video.create_from_urls(params[:vids][:urls])
   redirect '/'
 end
@@ -87,4 +96,31 @@ end
 delete '/videos/:id' do
   @video = Video.get(params[:id]).destroy
   redirect '/'
+end
+
+WillPaginate::ViewHelpers::LinkRenderer.class_eval do
+  protected
+  def url(page)
+    url = @template.request.url
+    page_rxp = Regexp.new("#{@options[:param_name]}=[0-9]+")
+    if page == 1
+      # strip out page param and trailing ? if it exists
+      url.gsub(page_rxp, '').gsub(/\?$/, '')
+    else
+      if url =~ page_rxp
+        url.gsub(page_rxp, "#{@options[:param_name]}=#{page}")
+      else
+        url + "?#{@options[:param_name]}=#{page}"
+      end      
+    end
+  end
+end
+
+helpers do
+  def partial(page, options={})
+    haml page, options.merge!(:layout => false)
+  end
+  
+  include WillPaginate::ViewHelpers::Base
+  include VideoHelpers
 end

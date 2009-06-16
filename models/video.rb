@@ -5,6 +5,7 @@ class Video
   property :created_at, DateTime
   property :url, String
   property :title, String
+  property :cached_filename, String
   property :state, String
   
   def self.create_from_urls(urls)
@@ -60,7 +61,11 @@ class Video
   end
   
   def filename
-    get_vid_video.send(:formatted_filename)
+    if cached_filename.nil?
+      attribute_set(:cached_filename, get_vid_video.send(:formatted_filename))
+      save!
+    end
+    cached_filename
   end
   
   def method_missing(method, *args)
