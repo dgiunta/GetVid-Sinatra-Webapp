@@ -22,7 +22,7 @@ Dir[
 ].each { |f| require f }
 
 DATABASE_DIR = File.expand_path(File.join(File.dirname(__FILE__), 'db'))
-ENVIRONMENT = ENV["SINATRA_ENV"] || :production
+ENVIRONMENT = ENV["SINATRA_ENV"] || ENV["RACK_ENV"] || :production
 USERS_FILE = File.expand_path(File.join(File.dirname(__FILE__), 'db/users.yml'))
 USERS = YAML.load(File.open(USERS_FILE)) if File.exists?(USERS_FILE)
 
