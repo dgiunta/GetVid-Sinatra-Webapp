@@ -1,0 +1,5 @@
+user1:
+  password: password
+  
+user2:
+  password: secret

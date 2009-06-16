@@ -2,6 +2,7 @@ require 'rubygems'
 require 'haml'
 require 'json'
 require 'datamapper'
+require 'yaml'
 
 Dir[File.join(File.dirname(__FILE__), 'vendor/**/lib')].each do |dir|
   $LOAD_PATH << dir
@@ -21,7 +22,9 @@ Dir[
 ].each { |f| require f }
 
 DATABASE_DIR = File.expand_path(File.join(File.dirname(__FILE__), 'db'))
-ENVIRONMENT = ENV["SINATRA_ENV"] || :development
+ENVIRONMENT = ENV["SINATRA_ENV"] || :production
+USERS_FILE = File.expand_path(File.join(File.dirname(__FILE__), 'db/users.yml'))
+USERS = YAML.load(File.open(USERS_FILE)) if File.exists?(USERS_FILE)
 
 set :environment, ENVIRONMENT
 set :root, File.dirname(__FILE__)
@@ -46,9 +49,10 @@ configure :production do
   DataMapper.setup(:default, "sqlite3:///#{DATABASE_DIR}/production.db")
   DataMapper.auto_upgrade!
   
-  use Rack::Auth::Basic do |username, password|
-    username == 'joey' && password == 'giunta' ||
-    username == 'dgiunta' && password == '071678'
+  if USERS
+    use Rack::Auth::Basic do |username, password|
+      USERS[username] && USERS[username]['password'] == password
+    end
   end
 end
 
