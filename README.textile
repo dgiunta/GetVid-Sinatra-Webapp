@@ -1,0 +1,23 @@
+h1. GetVid Sinatra Application
+
+This is just a rather simple little web application, made with Sinatra, that provides a nice interface for the GetVid video download and audio conversion library.
+
+It uses the MooTools javascript framework and implements a very basic worker script to manage the queue of video downloads.
+
+h2. Usage
+
+Like most Sinatra apps, you can get this app up on it's feet simply by running the main app file with the following command:
+
+<pre>
+  ruby get_vid.rb
+</pre>
+
+That will start a local server, setup a database, and get a copy of the website ready and waiting for videos to download.
+
+To start the worker process, in another terminal window run:
+
+<pre>
+  ruby daemons/vid_processor.rb
+</pre>
+
+That will start up the worker process that will endlessly ping the database for available videos to download / convert.
