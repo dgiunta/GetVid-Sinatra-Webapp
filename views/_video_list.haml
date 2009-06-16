@@ -1,0 +1,39 @@
+%div.video_list
+  = will_paginate(videos, :param_name => "#{name}_page")
+  %h1= video_list_title_for(name)
+  - if name == 'completed' && videos.total_entries > 0
+    %p
+      %strong To download files
+      Right-click the download links and select
+      %strong Save Target As
+  %table.videos{:cellpadding => 0, :cellspacing => 0, :id => name}
+    %tr.head
+      %th.video Video
+      %th.status Status
+      %th.action
+  
+    - videos.each do |video|
+      %tr{ :id => "video_#{video.id}" }
+        %td.video
+          %h3
+            %strong Submitted:
+            = video.created_at.strftime("%A %B %d %Y at %l:%M%P") unless video.created_at.nil?
+          %h2
+            %a{ :href => video.url, :title => video.cached_title, :target => "_blank" }= video.cached_title
+          - if video.state == 'complete'
+            %dl.download_links
+              %dt Download Links:
+              - if File.exists?(output_path_to("/Audio/#{video.filename}.aif"))
+                %dd
+                  %a{ :href => public_output_path_to("Audio/#{video.filename}.aif"), :title => "Audio File: #{video.title}" } Raw Audio
+              - if File.exists?(output_path_to("/Audio/#{video.filename}.mp3"))
+                %dd
+                  %a{ :href => public_output_path_to("Audio/#{video.filename}.mp3"), :title => "MP3 File: #{video.title}" } MP3 Audio
+              - if File.exists?(output_path_to("/Video/#{video.filename}.mp4"))
+                %dd
+                  %a{ :href => public_output_path_to("Video/#{video.filename}.mp4"), :title => "Video: #{video.title}"} Video
+        %td.status= video.current_state
+        %td
+          - if video.state == 'complete'
+            %a{ :href => "/videos/#{video.id}/delete" } Delete
+  
