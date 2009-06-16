@@ -1,0 +1,194 @@
+body {
+  background: #eee;
+  font-size: 13px;
+  line-height: 1.5em;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  letter-spacing: .07em;
+  color: #333;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  height: 100px;
+  border: 0;
+}
+
+h1, h2, h3, h4, h5, h6, table, tr, td {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+h1 {
+  font-size: 1.5em;
+  margin-bottom: 1em;
+}
+
+h2 {
+  font-size: 1.2em;
+  margin-bottom: 1.2em;
+}
+
+.buttons {
+  background: #999;
+  padding: .5em 1.5em;
+  margin: 1.5em -1.5em -1.5em;
+  text-align: right;
+}
+
+.buttons .cancel {
+  color: #900;
+  text-decoration: none;
+}
+
+.buttons .submit {
+  background: #060;
+}
+
+.buttons input {
+  background: #333;
+  padding: .5em 1em;
+  margin: 0 0 0 .5em;
+  border: 0;
+  color: #ccc;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+table .head {
+  background: #ccc;
+  color: #333;
+  text-align: left;
+}
+
+table .head th {
+  padding: .5em;
+}
+
+td {
+  padding: .5em;
+  background: #fff;
+  border-bottom: 2px solid #eee;
+  display: table-cell;
+}
+
+tr:hover td {
+  background-color: #ffc;
+}
+
+h1, .videos {
+  margin-top: 1.5em;
+  width: 100%;
+}
+
+#nav {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  float: right;
+  overflow: hidden;
+}
+
+#nav li {
+  float: left;
+  margin: 0 1em 0 0;
+}
+
+#nav li a {
+  background: #999;
+  padding: .2em .4em;
+  color: #fff;
+  font-weight: bold;
+  text-decoration: none;
+  display: block;
+}
+
+#nav li a:hover, #nav li a.selected {
+  background: #060;
+}
+
+#new_video {
+  padding: 1.5em;
+  border: 1px solid #ccc;
+  background: #dfdfdf;
+}
+
+.videos {
+  width: 100%;
+}
+
+.videos h3 {
+  font-size: .8em;
+  margin-bottom: 0;
+  color: #bbb;
+  font-weight: normal;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+
+.videos h3 strong {
+  color: #ccc;
+}
+
+.videos h2 {
+  font-size: 1em;
+  margin: 0;
+  font-weight: normal;
+}
+
+.videos a {
+  text-decoration: none;
+  border-bottom: 1px solid #ccc;
+  color: #999;
+}
+
+.videos a:hover {
+  border-bottom-color: #999;
+  color: #666;
+}
+
+.videos .status {
+  text-transform: capitalize;
+}
+
+.container {
+  position: relative;
+  width: 780px;
+  margin: 0 auto;
+}
+
+.videos .video {
+  width: 60%;
+}
+
+
+dl.download_links,
+dl.download_links dt,
+dl.download_links dd {
+  margin: 0;
+  padding: 0;
+}
+
+dl.download_links {
+  margin-top: 1em;
+}
+
+dl.download_links dt,
+dl.download_links dd {
+  float: left;
+}
+
+dl.download_links dd {
+  margin-left: .8em;
+}
+
+dl.download_links dd a {
+  border: 0;
+  padding: .25em .5em;
+  background: #ccc;
+}
+
+dl.download_links dd a:hover {
+  background: #999;
+  color: #333;
+}

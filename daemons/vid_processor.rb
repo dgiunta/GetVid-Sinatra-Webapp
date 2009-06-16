@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+require File.join(File.dirname(__FILE__), '../get_vid')
+
+puts ENVIRONMENT.to_s
+
+loop do
+  vids = Video.all(:state.not => 'complete')
+  puts "processing #{vids.length} videos"
+  vids.each { |vid| vid.process! }
+  sleep_time = if ENVIRONMENT.to_s == "development"
+    10
+  else
+    vids.length > 0 ? 120 : 60
+  end
+  
+  sleep sleep_time
+end

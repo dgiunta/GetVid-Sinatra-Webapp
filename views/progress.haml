@@ -1,0 +1,18 @@
+- if @videos.length > 0
+  %table#videos{:cellpadding => 0, :cellspacing => 0}
+    %tr.head
+      %th.video Video
+      %th.status Status
+      %th.action
+    
+    - @videos.each do |video|
+      %tr
+        %td
+          %h3
+            %strong Submitted:
+            = video.created_at.strftime("%A %B %d %Y") unless video.created_at.nil?
+          %h2
+            %a{ :href => video.url, :title => video.cached_title, :target => "_blank" }= video.cached_title
+        %td= video.state
+        %td
+          %a{ :href => "/videos/#{video.id}/delete" } Delete
