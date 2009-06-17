@@ -11,7 +11,7 @@ loop do
   sleep_time = if ENVIRONMENT.to_s == "development"
     10
   else
-    vids.length > 0 ? 120 : 60
+    vids.length > 0 ? 60 : 10
   end
   
   sleep sleep_time
