@@ -4,3 +4,5 @@ tmp/*
 db/*.db
 db/*.sqlite3
 db/users.yml
+public/output
+public/output/**/*
