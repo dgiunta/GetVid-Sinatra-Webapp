@@ -216,10 +216,10 @@ var Video = new Class({
       return dd;
     }, this);
     
-    dt.inject(container);
     links.each(function(link) {
-      link.inject(container);
+      link.inject(container, 'top');
     });
+    dt.inject(container, 'top');
     return container;
   },
   
