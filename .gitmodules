@@ -1,0 +1,3 @@
+[submodule "vendor/GetVid"]
+	path = vendor/GetVid
+	url = git://github.com/dgiunta/GetVid.git
