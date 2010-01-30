@@ -8,4 +8,6 @@ end
 
 gem 'sinatra'
 gem 'haml'
+gem 'datamapper'
+gem 'hpricot'
 gem 'json'
