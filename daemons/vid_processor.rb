@@ -6,7 +6,7 @@ puts ENVIRONMENT.to_s
 
 loop do
   vids = Video.all(:state.not => 'complete')
-  puts "processing #{vids.length} videos"
+  puts "processing #{vids.length} videos" if vids.length > 0
   vids.each { |vid| vid.process! }
   sleep_time = if ENVIRONMENT.to_s == "development"
     10
