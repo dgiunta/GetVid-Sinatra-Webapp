@@ -6,3 +6,7 @@ db/*.sqlite3
 db/users.yml
 public/output
 public/output/**/*
+
+vendor/gems/*
+!vendor/gems/ruby/1.8/cache
+bin/*
