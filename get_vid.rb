@@ -1,7 +1,6 @@
-require 'rubygems'
-require 'haml'
-require 'json'
-require 'datamapper'
+require File.join(File.dirname(__FILE__), 'vendor/gems/environment')
+Bundler.require_env
+
 require 'yaml'
 
 Dir[File.join(File.dirname(__FILE__), 'vendor/**/lib')].each do |dir|
@@ -13,7 +12,6 @@ require 'will_paginate/finders/data_mapper'
 require 'will_paginate/view_helpers/base'
 require 'will_paginate/view_helpers/link_renderer'
 
-require 'sinatra'
 
 Dir[
   File.join(File.dirname(__FILE__), 'vendor/**/lib/*.rb'),
