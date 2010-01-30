@@ -1,12 +1,17 @@
-require File.join(File.dirname(__FILE__), 'vendor/gems/environment')
+def path_to(file)
+  File.join(File.dirname(__FILE__), file)
+end
+
+require path_to('vendor/gems/environment')
 Bundler.require_env
 
 require 'yaml'
 
-Dir[File.join(File.dirname(__FILE__), 'vendor/**/lib')].each do |dir|
+Dir[path_to('vendor/GetVid/lib'), path_to('vendor/will_paginate/lib')].each do |dir|
   $LOAD_PATH << dir
 end
 
+require 'vendor/GetVid/get_vid'
 require 'will_paginate'
 require 'will_paginate/finders/data_mapper'
 require 'will_paginate/view_helpers/base'
@@ -14,14 +19,13 @@ require 'will_paginate/view_helpers/link_renderer'
 
 
 Dir[
-  File.join(File.dirname(__FILE__), 'vendor/**/lib/*.rb'),
-  File.join(File.dirname(__FILE__), "models/*.rb"),
-  File.join(File.dirname(__FILE__), "helpers/*.rb")
+  path_to("models/*.rb"),
+  path_to("helpers/*.rb")
 ].each { |f| require f }
 
-DATABASE_DIR = File.expand_path(File.join(File.dirname(__FILE__), 'db'))
+DATABASE_DIR = File.expand_path(path_to('db'))
 ENVIRONMENT = ENV["SINATRA_ENV"] || ENV["RACK_ENV"] || :development
-USERS_FILE = File.expand_path(File.join(File.dirname(__FILE__), 'db/users.yml'))
+USERS_FILE = File.expand_path(path_to('db/users.yml'))
 USERS = YAML.load(File.open(USERS_FILE)) if File.exists?(USERS_FILE)
 
 set :environment, ENVIRONMENT
@@ -29,7 +33,7 @@ set :root, File.dirname(__FILE__)
 
 configure do
   GetVid.configure do |config|
-    config.output_dir = File.join(File.dirname(__FILE__), 'public/output')
+    config.output_dir = path_to('public/output')
   end
 end
 
